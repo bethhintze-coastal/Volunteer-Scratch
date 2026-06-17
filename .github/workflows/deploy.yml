@@ -1,0 +1,66 @@
+name: Deploy to Salesforce
+
+on:
+  workflow_dispatch:
+    inputs:
+      check_only:
+        description: 'Validation only (no deploy)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      test_level:
+        description: 'Test level'
+        required: false
+        default: 'NoTestRun'
+        type: choice
+        options:
+          - NoTestRun
+          - RunLocalTests
+          - RunAllTestsInOrg
+
+jobs:
+  deploy:
+    name: Deploy VMQS Configuration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install Salesforce CLI
+        run: |
+          npm install --global @salesforce/cli
+          sf --version
+
+      - name: Authenticate to target org
+        run: |
+          echo "${{ secrets.SFDX_AUTH_URL }}" > sfdx-auth-url.txt
+          sf org login sfdx-url --sfdx-url-file sfdx-auth-url.txt --alias target-org --set-default
+          rm sfdx-auth-url.txt
+
+      - name: Validate (check-only)
+        if: ${{ inputs.check_only == 'true' }}
+        run: |
+          sf project deploy validate \
+            --manifest manifest/package.xml \
+            --target-org target-org \
+            --test-level ${{ inputs.test_level }} \
+            --api-version 67.0 \
+            --wait 30
+
+      - name: Deploy
+        if: ${{ inputs.check_only == 'false' }}
+        run: |
+          sf project deploy start \
+            --manifest manifest/package.xml \
+            --target-org target-org \
+            --test-level ${{ inputs.test_level }} \
+            --api-version 67.0 \
+            --wait 30
+
+      - name: Show deployment result
+        if: always()
+        run: sf project deploy report --target-org target-org || true

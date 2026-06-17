@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- Custom Metadata Type: Volunteer_Milestone__mdt (object definition + records) -->
+    <types>
+        <members>Volunteer_Milestone.Bronze</members>
+        <members>Volunteer_Milestone.Gold</members>
+        <members>Volunteer_Milestone.Platinum</members>
+        <members>Volunteer_Milestone.Silver</members>
+        <name>CustomMetadata</name>
+    </types>
+
+    <!-- Custom Fields on Account (Person Account / volunteer profile) -->
+    <!-- Custom Fields on JobPositionAssignment (role + waitlist) -->
+    <types>
+        <members>Account.Availability_Notes__c</members>
+        <members>Account.Availability_Status__c</members>
+        <members>Account.Current_Milestone__c</members>
+        <members>Account.Preferred_Days__c</members>
+        <members>Account.Preferred_Times__c</members>
+        <members>Account.Total_Volunteer_Hours__c</members>
+        <members>JobPositionAssignment.Role__c</members>
+        <members>JobPositionAssignment.Waitlist_Position__c</members>
+        <name>CustomField</name>
+    </types>
+
+    <!-- Custom Objects: junction object + CMT definition -->
+    <types>
+        <members>Volunteer_Milestone__mdt</members>
+        <members>Volunteer_Program_Interest__c</members>
+        <name>CustomObject</name>
+    </types>
+
+    <!-- Flows: all VMQS volunteer management flows -->
+    <types>
+        <members>VMQS_Authenticated_Cancel_Shift</members>
+        <members>VMQS_Authenticated_Reschedule_Shift</members>
+        <members>VMQS_Authenticated_Sign_Up</members>
+        <members>VMQS_Auto_Update_Volunteer_Hours</members>
+        <members>VMQS_Coordinator_Promote_From_Waitlist</members>
+        <members>VMQS_Send_Shift_Reminders</members>
+        <members>VMQS_Sign_Up_Guest_User</members>
+        <members>VMQS_Sign_Up_Guest_User_Volunteer_Handling</members>
+        <members>VMQS_Volunteer_Milestone_Alert</members>
+        <name>Flow</name>
+    </types>
+
+    <!-- Permission Sets -->
+    <types>
+        <members>Volunteer_Coordinator</members>
+        <members>Volunteer_Portal_User</members>
+        <name>PermissionSet</name>
+    </types>
+
+    <!-- Sharing Rules for portal access (authenticated users) -->
+    <!-- NOTE: Industries Cloud sharing rules cannot be deployed via metadata API.
+         These files are included for reference. Apply manually in Setup > Sharing Settings. -->
+    <types>
+        <members>JobPositionShift</members>
+        <members>VolunteerInitiative</members>
+        <name>SharingRules</name>
+    </types>
+
+    <version>67.0</version>
+</Package>
