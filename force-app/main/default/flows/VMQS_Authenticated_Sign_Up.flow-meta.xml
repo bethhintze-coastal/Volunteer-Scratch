@@ -44,8 +44,8 @@
         <label>Capacity Available?</label>
         <locationX>176</locationX>
         <locationY>854</locationY>
-        <defaultConnector><targetReference>Screen_At_Capacity</targetReference></defaultConnector>
-        <defaultConnectorLabel>At Capacity</defaultConnectorLabel>
+        <defaultConnector><targetReference>Get_Waitlist_Max</targetReference></defaultConnector>
+        <defaultConnectorLabel>At Capacity — Offer Waitlist</defaultConnectorLabel>
         <rules>
             <name>outcome_HasCapacity</name>
             <conditionLogic>and</conditionLogic>
@@ -58,7 +58,7 @@
             <label>Has Capacity</label>
         </rules>
     </decisions>
-    <description>Allows authenticated portal volunteers to browse all available shifts and sign up. Uses the logged-in user&apos;s Contact ID to create the JobPositionAssignment. Enforces capacity and prevents duplicate signups.</description>
+    <description>Allows authenticated portal volunteers to browse all available shifts and sign up. Uses the logged-in user&apos;s Contact ID to create the JobPositionAssignment. Enforces capacity — when a shift is full, offers the volunteer a place on the waitlist.</description>
     <dynamicChoiceSets>
         <name>choiceShifts</name>
         <collectionReference>colShifts</collectionReference>
@@ -67,6 +67,12 @@
         <object>JobPositionShift</object>
         <valueField>Id</valueField>
     </dynamicChoiceSets>
+    <formulas>
+        <name>frmWaitlistPosition</name>
+        <dataType>Number</dataType>
+        <scale>0</scale>
+        <expression>IF(ISBLANK({!recWaitlistMax.Waitlist_Position__c}), 1, {!recWaitlistMax.Waitlist_Position__c} + 1)</expression>
+    </formulas>
     <interviewLabel>VMQS Authenticated Sign Up {!$Flow.CurrentDateTime}</interviewLabel>
     <label>VMQS - Authenticated Volunteer Sign Up</label>
     <processMetadataValues>
@@ -95,6 +101,34 @@
         <inputAssignments>
             <field>DoesCountTowardShiftCapacity</field>
             <value><booleanValue>true</booleanValue></value>
+        </inputAssignments>
+        <object>JobPositionAssignment</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Waitlist_Assignment</name>
+        <label>Create Waitlist Assignment</label>
+        <locationX>176</locationX>
+        <locationY>1334</locationY>
+        <connector><targetReference>Screen_Waitlist_Confirmation</targetReference></connector>
+        <inputAssignments>
+            <field>AssignedContactId</field>
+            <value><elementReference>$User.ContactId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>AssignedPositionShiftId</field>
+            <value><elementReference>pick_Shift</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value><stringValue>Waitlisted</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>DoesCountTowardShiftCapacity</field>
+            <value><booleanValue>false</booleanValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Waitlist_Position__c</field>
+            <value><elementReference>frmWaitlistPosition</elementReference></value>
         </inputAssignments>
         <object>JobPositionAssignment</object>
     </recordCreates>
@@ -167,6 +201,32 @@
         <queriedFields>RemainingCapacity</queriedFields>
         <queriedFields>MaximumAttendeesCount</queriedFields>
     </recordLookups>
+    <recordLookups>
+        <name>Get_Waitlist_Max</name>
+        <label>Get Highest Waitlist Position</label>
+        <locationX>176</locationX>
+        <locationY>974</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Screen_Offer_Waitlist</targetReference></connector>
+        <filterLogic>AND</filterLogic>
+        <filters>
+            <field>AssignedPositionShiftId</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>pick_Shift</elementReference></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>Waitlisted</stringValue></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>JobPositionAssignment</object>
+        <outputReference>recWaitlistMax</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Waitlist_Position__c</queriedFields>
+        <sortField>Waitlist_Position__c</sortField>
+        <sortOrder>Desc</sortOrder>
+    </recordLookups>
     <screens>
         <name>Screen_No_Shifts</name>
         <label>No Shifts Available</label>
@@ -225,16 +285,33 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Screen_At_Capacity</name>
-        <label>Shift Full</label>
-        <locationX>396</locationX>
-        <locationY>974</locationY>
+        <name>Screen_Offer_Waitlist</name>
+        <label>This Shift is Full</label>
+        <locationX>176</locationX>
+        <locationY>1094</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
+        <connector><targetReference>Create_Waitlist_Assignment</targetReference></connector>
         <fields>
-            <name>txt_AtCapacity</name>
-            <fieldText>&lt;p&gt;Sorry, this shift is now full. Please go back and select a different shift.&lt;/p&gt;</fieldText>
+            <name>txt_OfferWaitlist</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 18px;&quot;&gt;This shift is currently full.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;You can join the waitlist. If a spot opens up, a coordinator will reach out to you. Click Next to join the waitlist, or Back to select a different shift.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Your waitlist position will be: {!frmWaitlistPosition}&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Screen_Waitlist_Confirmation</name>
+        <label>Added to Waitlist</label>
+        <locationX>176</locationX>
+        <locationY>1454</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>txt_WaitlistConfirmation</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 18px;&quot;&gt;You&apos;re on the waitlist!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;You have been added to the waitlist at position {!frmWaitlistPosition}. A coordinator will contact you if a spot becomes available.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -285,5 +362,13 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>JobPositionShift</objectType>
+    </variables>
+    <variables>
+        <name>recWaitlistMax</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>JobPositionAssignment</objectType>
     </variables>
 </Flow>
