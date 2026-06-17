@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <decisions>
+        <name>Decision_Bronze</name>
+        <label>Reached Bronze?</label>
+        <locationX>176</locationX>
+        <locationY>254</locationY>
+        <defaultConnector><targetReference>Decision_Silver</targetReference></defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>outcome_Bronze</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Total_Volunteer_Hours__c</leftValueReference>
+                <operator>GreaterThanOrEqualTo</operator>
+                <rightValue><numberValue>50</numberValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Total_Volunteer_Hours__c</leftValueReference>
+                <operator>LessThan</operator>
+                <rightValue><numberValue>50</numberValue></rightValue>
+            </conditions>
+            <connector><targetReference>Create_Bronze_Task</targetReference></connector>
+            <label>Yes — Bronze Crossed</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Decision_Silver</name>
+        <label>Reached Silver?</label>
+        <locationX>176</locationX>
+        <locationY>494</locationY>
+        <defaultConnector><targetReference>Decision_Gold</targetReference></defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>outcome_Silver</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Total_Volunteer_Hours__c</leftValueReference>
+                <operator>GreaterThanOrEqualTo</operator>
+                <rightValue><numberValue>100</numberValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Total_Volunteer_Hours__c</leftValueReference>
+                <operator>LessThan</operator>
+                <rightValue><numberValue>100</numberValue></rightValue>
+            </conditions>
+            <connector><targetReference>Create_Silver_Task</targetReference></connector>
+            <label>Yes — Silver Crossed</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Decision_Gold</name>
+        <label>Reached Gold?</label>
+        <locationX>176</locationX>
+        <locationY>734</locationY>
+        <defaultConnector><targetReference>Decision_Platinum</targetReference></defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>outcome_Gold</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Total_Volunteer_Hours__c</leftValueReference>
+                <operator>GreaterThanOrEqualTo</operator>
+                <rightValue><numberValue>250</numberValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Total_Volunteer_Hours__c</leftValueReference>
+                <operator>LessThan</operator>
+                <rightValue><numberValue>250</numberValue></rightValue>
+            </conditions>
+            <connector><targetReference>Create_Gold_Task</targetReference></connector>
+            <label>Yes — Gold Crossed</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Decision_Platinum</name>
+        <label>Reached Platinum?</label>
+        <locationX>176</locationX>
+        <locationY>974</locationY>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>outcome_Platinum</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Total_Volunteer_Hours__c</leftValueReference>
+                <operator>GreaterThanOrEqualTo</operator>
+                <rightValue><numberValue>500</numberValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Total_Volunteer_Hours__c</leftValueReference>
+                <operator>LessThan</operator>
+                <rightValue><numberValue>500</numberValue></rightValue>
+            </conditions>
+            <connector><targetReference>Create_Platinum_Task</targetReference></connector>
+            <label>Yes — Platinum Crossed</label>
+        </rules>
+    </decisions>
+    <description>Record-triggered flow on Account. When Total_Volunteer_Hours__c is updated and a volunteer crosses a milestone threshold (Bronze 50, Silver 100, Gold 250, Platinum 500), creates a Task for the record owner to recognise the volunteer.</description>
+    <interviewLabel>VMQS Volunteer Milestone Alert {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>VMQS - Volunteer Milestone Alert</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value><stringValue>LightningFlowBuilder</stringValue></value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Bronze_Task</name>
+        <label>Create Bronze Milestone Task</label>
+        <locationX>396</locationX>
+        <locationY>374</locationY>
+        <connector><targetReference>Decision_Silver</targetReference></connector>
+        <inputAssignments>
+            <field>Subject</field>
+            <value><stringValue>🏅 Volunteer Milestone Reached: Bronze — 50 Hours</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value><stringValue>Not Started</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value><stringValue>Normal</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value><elementReference>$Record.OwnerId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value><elementReference>$Record.PersonContactId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description</field>
+            <value><stringValue>This volunteer has reached the Bronze milestone with 50 or more total volunteer hours. Consider reaching out to acknowledge their contribution.</stringValue></value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Silver_Task</name>
+        <label>Create Silver Milestone Task</label>
+        <locationX>396</locationX>
+        <locationY>614</locationY>
+        <connector><targetReference>Decision_Gold</targetReference></connector>
+        <inputAssignments>
+            <field>Subject</field>
+            <value><stringValue>🥈 Volunteer Milestone Reached: Silver — 100 Hours</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value><stringValue>Not Started</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value><stringValue>Normal</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value><elementReference>$Record.OwnerId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value><elementReference>$Record.PersonContactId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description</field>
+            <value><stringValue>This volunteer has reached the Silver milestone with 100 or more total volunteer hours. Consider reaching out to acknowledge their contribution.</stringValue></value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Gold_Task</name>
+        <label>Create Gold Milestone Task</label>
+        <locationX>396</locationX>
+        <locationY>854</locationY>
+        <connector><targetReference>Decision_Platinum</targetReference></connector>
+        <inputAssignments>
+            <field>Subject</field>
+            <value><stringValue>🥇 Volunteer Milestone Reached: Gold — 250 Hours</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value><stringValue>Not Started</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value><stringValue>High</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value><elementReference>$Record.OwnerId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value><elementReference>$Record.PersonContactId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description</field>
+            <value><stringValue>This volunteer has reached the Gold milestone with 250 or more total volunteer hours. Consider reaching out to acknowledge their exceptional contribution.</stringValue></value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Platinum_Task</name>
+        <label>Create Platinum Milestone Task</label>
+        <locationX>396</locationX>
+        <locationY>1094</locationY>
+        <inputAssignments>
+            <field>Subject</field>
+            <value><stringValue>💎 Volunteer Milestone Reached: Platinum — 500 Hours</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value><stringValue>Not Started</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value><stringValue>High</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value><elementReference>$Record.OwnerId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value><elementReference>$Record.PersonContactId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description</field>
+            <value><stringValue>This volunteer has reached the Platinum milestone with 500 or more total volunteer hours. This is an outstanding achievement — please ensure they are recognised appropriately.</stringValue></value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Decision_Bronze</targetReference></connector>
+        <filterLogic>AND</filterLogic>
+        <filters>
+            <field>Total_Volunteer_Hours__c</field>
+            <operator>IsChanged</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </filters>
+        <object>Account</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

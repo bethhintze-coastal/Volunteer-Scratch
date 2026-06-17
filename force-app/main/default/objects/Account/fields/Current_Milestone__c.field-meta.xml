@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Current_Milestone__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(
+  ISBLANK(Total_Volunteer_Hours__c),
+  "",
+  IF(
+    Total_Volunteer_Hours__c >= $CustomMetadata.Volunteer_Milestone__mdt.Platinum.Hours_Required__c,
+    $CustomMetadata.Volunteer_Milestone__mdt.Platinum.Milestone_Label__c,
+    IF(
+      Total_Volunteer_Hours__c >= $CustomMetadata.Volunteer_Milestone__mdt.Gold.Hours_Required__c,
+      $CustomMetadata.Volunteer_Milestone__mdt.Gold.Milestone_Label__c,
+      IF(
+        Total_Volunteer_Hours__c >= $CustomMetadata.Volunteer_Milestone__mdt.Silver.Hours_Required__c,
+        $CustomMetadata.Volunteer_Milestone__mdt.Silver.Milestone_Label__c,
+        IF(
+          Total_Volunteer_Hours__c >= $CustomMetadata.Volunteer_Milestone__mdt.Bronze.Hours_Required__c,
+          $CustomMetadata.Volunteer_Milestone__mdt.Bronze.Milestone_Label__c,
+          ""
+        )
+      )
+    )
+  )
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Current Milestone</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
