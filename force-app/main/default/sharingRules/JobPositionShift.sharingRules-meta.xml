@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- Authenticated portal users see active shifts for signup -->
+    <criteriaBasedRules>
+        <fullName>Portal_Access_for_Job_Position_Shift</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>Shares active Job Position Shifts to authenticated Community users so they can browse and sign up for shifts.</description>
+        <label>Portal Access for Job Position Shift</label>
+        <includeRecordsOwnedByAll>true</includeRecordsOwnedByAll>
+        <sharedTo>
+            <allCustomerPortalUsers>true</allCustomerPortalUsers>
+        </sharedTo>
+        <criteriaItems>
+            <field>Status</field>
+            <operation>equals</operation>
+            <value>In Progress</value>
+        </criteriaItems>
+    </criteriaBasedRules>
+    <!-- Guest (unauthenticated) users see active shifts -->
+    <sharingGuestRules>
+        <fullName>Guest_Access_for_Job_Position_Shift</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>This enables volunteer signups by providing access publicly based on Status field.</description>
+        <label>Guest Access for Job Position Shift</label>
+        <sharedTo>
+            <guestUser>Volunteer_Sign_Up</guestUser>
+        </sharedTo>
+        <criteriaItems>
+            <field>Status</field>
+            <operation>equals</operation>
+            <value>In Progress</value>
+        </criteriaItems>
+    </sharingGuestRules>
+</SharingRules>

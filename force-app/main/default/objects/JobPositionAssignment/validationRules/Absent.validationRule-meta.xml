@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Absent</fullName>
+    <active>true</active>
+    <description>If the volunteer is marked as Absent then the Actual Duration field must be set to 0 hours.</description>
+    <errorConditionFormula>AND( ISPICKVAL(Status, &quot;Absent&quot;), ActualDuration   &lt;&gt;   0)</errorConditionFormula>
+    <errorMessage>If the volunteer is marked as Absent then the Actual Duration field must be set to 0 hours.</errorMessage>
+</ValidationRule>

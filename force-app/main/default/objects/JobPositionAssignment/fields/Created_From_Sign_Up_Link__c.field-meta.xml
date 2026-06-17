@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Created_From_Sign_Up_Link__c</fullName>
+    <defaultValue>false</defaultValue>
+    <inlineHelpText>This box is checked if the volunteer used the Sign Up link to register for their volunteer activity.</inlineHelpText>
+    <label>Created From Sign Up Link</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

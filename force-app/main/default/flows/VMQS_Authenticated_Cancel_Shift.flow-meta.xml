@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <decisions>
+        <name>Decision_Has_Assignments</name>
+        <label>Has Upcoming Shifts?</label>
+        <locationX>176</locationX>
+        <locationY>254</locationY>
+        <defaultConnector><targetReference>Screen_No_Assignments</targetReference></defaultConnector>
+        <defaultConnectorLabel>No Shifts</defaultConnectorLabel>
+        <rules>
+            <name>outcome_HasAssignments</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>colMyAssignments</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Screen_Select_Shift_To_Cancel</targetReference></connector>
+            <label>Has Shifts</label>
+        </rules>
+    </decisions>
+    <description>Allows authenticated portal volunteers to cancel their upcoming shift assignments. Uses the logged-in user&apos;s Contact ID to scope records to their own assignments only.</description>
+    <dynamicChoiceSets>
+        <name>choiceMyAssignments</name>
+        <collectionReference>colMyAssignments</collectionReference>
+        <dataType>String</dataType>
+        <displayField>Name</displayField>
+        <object>JobPositionAssignment</object>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <interviewLabel>VMQS Authenticated Cancel Shift {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>VMQS - Authenticated Cancel Shift</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value><stringValue>LightningFlowBuilder</stringValue></value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_My_Assignments</name>
+        <label>Get My Upcoming Assignments</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Decision_Has_Assignments</targetReference></connector>
+        <filterLogic>AND</filterLogic>
+        <filters>
+            <field>AssignedContactId</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>$User.ContactId</elementReference></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>Upcoming</stringValue></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>JobPositionAssignment</object>
+        <outputReference>colMyAssignments</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>ScheduledStartTime</queriedFields>
+        <queriedFields>ScheduledEndTime</queriedFields>
+        <queriedFields>Status</queriedFields>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Assignment_Canceled</name>
+        <label>Cancel Assignment</label>
+        <locationX>176</locationX>
+        <locationY>614</locationY>
+        <connector><targetReference>Screen_Cancel_Confirmation</targetReference></connector>
+        <filterLogic>AND</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>pick_AssignmentToCancel</elementReference></value>
+        </filters>
+        <inputAssignments>
+            <field>Status</field>
+            <value><stringValue>Canceled</stringValue></value>
+        </inputAssignments>
+        <object>JobPositionAssignment</object>
+    </recordUpdates>
+    <screens>
+        <name>Screen_No_Assignments</name>
+        <label>No Upcoming Shifts</label>
+        <locationX>396</locationX>
+        <locationY>374</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>txt_NoAssignments</name>
+            <fieldText>&lt;p&gt;You don&apos;t have any upcoming shifts to cancel.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Screen_Select_Shift_To_Cancel</name>
+        <label>Select Shift to Cancel</label>
+        <locationX>176</locationX>
+        <locationY>374</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector><targetReference>Screen_Confirm_Cancel</targetReference></connector>
+        <fields>
+            <name>txt_CancelHeader</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 18px;&quot;&gt;Cancel a Shift&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Select the shift you would like to cancel.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>pick_AssignmentToCancel</name>
+            <choiceReferences>choiceMyAssignments</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Shift to Cancel</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Screen_Confirm_Cancel</name>
+        <label>Confirm Cancellation</label>
+        <locationX>176</locationX>
+        <locationY>494</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector><targetReference>Update_Assignment_Canceled</targetReference></connector>
+        <fields>
+            <name>txt_ConfirmCancel</name>
+            <fieldText>&lt;p&gt;Are you sure you want to cancel this shift? This action cannot be undone. Click Next to confirm, or Back to go back.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Screen_Cancel_Confirmation</name>
+        <label>Shift Cancelled</label>
+        <locationX>176</locationX>
+        <locationY>734</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>txt_CancelConfirmation</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 18px;&quot;&gt;Your shift has been cancelled.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;If you&apos;d like to sign up for a different shift, visit the Sign Up page.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Get_My_Assignments</targetReference></connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>colMyAssignments</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>JobPositionAssignment</objectType>
+    </variables>
+</Flow>

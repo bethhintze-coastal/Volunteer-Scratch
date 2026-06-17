@@ -1,0 +1,185 @@
+User Story #,Full Story,Context,Acceptance Criteria
+US-312,As a event coordinator I want to track volunteer participation at events so that I can manage volunteer resources effectively,Events are being tracked using the standard object Campaign members and Campaigns. there is no additional custom event object,"Volunteers are recorded as Contacts associated with the Campaign event.
+
+Volunteer participants are identified using a Volunteer Role or Volunteer Status field.
+
+Each volunteer record includes fields for Role, Event, Participation Date, and Hours Served.
+
+Event records display a list of volunteers participating in the event.
+
+Users can update volunteer participation status after the event.
+
+Reports can display volunteer participation by event, role, site, and date.
+
+Volunteer activity can be included in engagement and participation reports.
+
+Visibility of volunteer participation data follows role-based security and site-level sharing rules."
+US-313,As a event coordinator I want to flag certain contacts as non-solicitationable so that I can respect corporate partner restrictions on fundraising outreach,,"Contact records include a Non-Solicitable flag field.
+
+Users can mark a contact as Non-Solicitable when corporate or organizational restrictions apply.
+
+The Non-Solicitable flag is visible on the Contact record.
+
+Contacts marked as Non-Solicitable are excluded from solicitation-related campaigns or fundraising outreach lists.
+
+Event invitation reports can identify contacts flagged as Non-Solicitable.
+
+Reports can display contacts with the Non-Solicitable flag for compliance tracking.
+
+Only authorized users can update the Non-Solicitable flag.
+
+Visibility of the Non-Solicitable flag follows role-based security and site-level sharing rules."
+US-320,As a Program Manager I want to allow Volunteers to manage their own shifts so that we can reduce the administrative burden on staff,,"Volunteers can view available volunteer shifts through an external form or portal.
+
+Volunteers can sign up for, update, or cancel their assigned shifts.
+
+Each shift record includes fields for Event/Program, Date, Time, Role, and Capacity.
+
+The system prevents more volunteers from signing up than the maximum shift capacity.
+
+When a volunteer signs up for a shift, the shift record is automatically associated with their Contact record.
+
+Changes made by volunteers automatically update the shift assignment in Salesforce.
+
+Staff can view and manage volunteer shift assignments from the event or volunteer management record.
+
+Reports can display volunteer shifts by event, role, date, and site.
+
+Volunteer access and shift management follow appropriate permission and security controls."
+US-321,As a Program Manager I want to easily see volunteer availability and skills so that I can match volunteers to appropriate opportunities,,"Contact records for volunteers include fields for Volunteer Skills and Availability.
+
+Users can record multiple skills for each volunteer (e.g., mentoring, event support, public speaking).
+
+Availability can be recorded using fields such as preferred days, times, or availability status.
+
+Program managers can view volunteer skills and availability directly from the Contact record.
+
+Reports can filter volunteers by skills, availability, site, and program area.
+
+Users can generate lists of volunteers who match the requirements of a specific opportunity or event.
+
+Volunteer skills and availability can be updated as needed by authorized users.
+
+Visibility of volunteer information follows role-based security and site-level sharing rules."
+US-328,As a Volunteer Coordinator I want to automatically update volunteer hours and statuses after an event so that I don't have to manually update each record and reduce duplicate work,,"When an event is marked as Completed, the system automatically updates volunteer participation records.
+
+Volunteer records associated with the event include fields for Hours Served and Participation Status.
+
+Volunteer hours are automatically calculated or applied based on the event duration or defined shift length.
+
+The volunteer’s Contact record reflects updated participation history and total volunteer hours.
+
+Users can review and adjust volunteer hours if needed before finalizing the update.
+
+Reports can display volunteer hours by event, volunteer, site, and date.
+
+Automated updates prevent duplicate volunteer hour entries for the same event.
+
+Visibility and editing of volunteer records follow role-based security and site-level sharing rules."
+US-329,As a Volunteer Coordinator I want to send automated reminders to volunteers about upcoming shifts so that we reduce no-shows,,"Volunteer shift records include fields for Shift Date, Start Time, End Time, Role, and Assigned Volunteer.
+
+The system automatically sends email reminders to volunteers prior to their scheduled shift (e.g., 24–48 hours before the shift).
+
+Reminder messages use email templates with merge fields (e.g., volunteer name, shift date, time, location).
+
+Reminders are only sent to volunteers who are assigned to a shift.
+
+Sent reminders are logged as activities on the volunteer’s Contact record.
+
+Users can configure or update the timing of reminder notifications.
+
+Reports can display volunteer shifts and reminder statuses by event, site, and date.
+
+Automated reminders follow system notification settings and role-based security permissions."
+US-330,As a Volunteer Coordinator I want to manage waitlists for volunteer shifts effectively so that we can fill openings when cancellations occur,,"Volunteer shift records include a Waitlist option when the shift reaches maximum capacity.
+
+Volunteers who attempt to sign up after capacity is reached are added to the waitlist for that shift.
+
+Waitlisted volunteers are tracked in the shift record with a Waitlist Status.
+
+When a volunteer cancels a shift, the system allows the coordinator to promote the next volunteer from the waitlist.
+
+The promoted volunteer is automatically assigned to the shift and notified of the change.
+
+Volunteer coordinators can view and manage the waitlist order for each shift.
+
+Reports can display shift capacity, assigned volunteers, and waitlisted volunteers.
+
+Visibility and management of volunteer waitlists follow role-based security and site-level sharing rules."
+US-331,"As a Volunteer Coordinator I want to recognize volunteer milestones (e.g., hours contributed) so that I can acknowledge and appreciate their contributions",,"Volunteer records track total hours contributed across events and programs.
+
+The system calculates and updates cumulative volunteer hours automatically as participation records are added.
+
+Milestone thresholds (e.g., 50 hours, 100 hours, 250 hours) are configurable by administrators.
+
+When a volunteer reaches a milestone, the system can flag the milestone on the Contact record.
+
+The system can generate alerts or tasks for volunteer coordinators when milestones are reached.
+
+Reports can display volunteers who have reached specific milestone levels.
+
+Volunteer milestone data can be used for recognition programs, communications, or awards.
+
+Visibility of volunteer hours and milestone data follows role-based security and site-level sharing rules."
+US-340,As a Data Analyst I want to improve data quality for volunteer affiliations and employer information so that reporting is accurate and reliable,,"Contact records include standardized fields for Employer and Affiliation.
+
+Employer information is linked to an Account record rather than stored as free text.
+
+The system uses validation rules or picklists to enforce consistent data entry for affiliation types.
+
+Duplicate detection rules help prevent multiple employer or affiliation records for the same organization.
+
+Existing records with inconsistent employer or affiliation data can be reviewed and corrected through data cleanup reports.
+
+Reports can identify contacts missing employer or affiliation information.
+
+Reports can display volunteer participation and hours by employer or corporate affiliation.
+
+Data quality dashboards highlight incomplete, inconsistent, or duplicate affiliation records.
+
+Visibility and editing of affiliation and employer data follow role-based security and data governance policies."
+US-341,As a Data Analyst I want to track additional data points such as volunteer skills and availability so that we can better match volunteers to opportunities,,"Volunteer records include fields for Volunteer Skills and Availability.
+
+The system allows multiple skills to be associated with a single volunteer.
+
+Availability fields capture information such as preferred days, times, and program interests.
+
+Skills and availability information is visible on the Contact or Volunteer profile record.
+
+Users can filter and generate reports based on skills, availability, site, and program area.
+
+Volunteer skills and availability can be updated by authorized users as volunteer preferences change.
+
+Reports can identify volunteers who match the requirements of specific events or opportunities.
+
+Visibility and editing of volunteer profile data follow role-based security and site-level sharing rules."
+US-68,"As a System Administrator I want to explore solutions to integrate shadow systems (e.g., spreadsheets) into Salesforce so that all volunteer data is in one place",,"The system supports importing volunteer data from spreadsheets using a standardized template.
+
+Imported records are mapped to the appropriate Salesforce objects (e.g., Contacts, Volunteer Participation, Events).
+
+Duplicate matching rules are applied to prevent creating duplicate volunteer records.
+
+The import process includes data validation to ensure required fields are populated.
+
+Users can generate reports showing which volunteer records originated from spreadsheet imports.
+
+Documentation is created outlining approved processes for migrating or integrating shadow system data into Salesforce.
+
+Administrators can evaluate and implement integration or automation tools (e.g., data import tools, integrations, or scheduled uploads) to reduce reliance on manual spreadsheets.
+
+Access to import tools and configuration follows system administrator permissions and data governance policies."
+US-69,As a System Administrator I want to minimize the number of clicks required to update volunteer attendance so that the process is more efficient,,"Volunteer attendance can be updated directly from the event or shift record in a single list view or related list.
+
+Users can update multiple volunteer attendance statuses in bulk.
+
+The system supports inline editing of attendance status fields.
+
+Attendance updates require no more than one or two actions per record.
+
+The process allows volunteers to be marked as Attended, Absent, or Cancelled.
+
+Updates automatically reflect on the volunteer’s Contact record and participation history.
+
+Reports and dashboards reflect updated attendance data immediately after changes are saved.
+
+The streamlined process follows role-based security and editing permissions."

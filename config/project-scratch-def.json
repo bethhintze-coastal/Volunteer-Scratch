@@ -1,0 +1,83 @@
+{
+  "orgName": "Volunteer-Scratch NPC",
+  "edition": "Enterprise",
+  "description": "Nonprofit Cloud scratch org focused on Volunteer Management, Fundraising, and Case Management.",
+  "features": [
+    "AnalyticsQueryService",
+    "Assessments",
+    "Communities",
+    "CustomerCommunityPlus",
+    "CustomerCommunityPlusLogin",
+    "ContactsToMultipleAccounts",
+    "DataProcessingEngine",
+    "DecisionTable",
+    "DocumentChecklist",
+    "EnableSetPasswordInApi",
+    "Fundraising",
+    "IndustriesActionPlan",
+    "IndustriesSalesExcellenceAddOn",
+    "IndustriesServiceExcellenceAddOn",
+    "MarketingUser",
+    "NonprofitCloudCaseManagementUser",
+    "OmniStudioDesigner",
+    "OmniStudioRuntime",
+    "OutcomeManagement",
+    "PersonAccounts",
+    "ProgramManagement",
+    "PublicSectorAccess",
+    "StateAndCountryPicklist",
+    "VolunteerManagement"
+  ],
+  "settings": {
+    "apexSettings": {
+      "enableDisableParallelApexTesting": true
+    },
+    "chatterSettings": {
+      "enableChatter": true
+    },
+    "emailAdministrationSettings": {
+      "enableEnhancedEmailEnabled": true
+    },
+    "enhancedNotesSettings": {
+      "enableEnhancedNotes": true
+    },
+    "industriesSettings": {
+      "enableBenefitAndGoalSharingPref": true,
+      "enableBenefitManagementPreference": true,
+      "enableCarePlansPreference": true,
+      "enableCaseReferralPref": true,
+      "enableDiscoveryFrameworkMetadata": true,
+      "enableEnhancedUIForISPref": true,
+      "enableFundraising": true,
+      "enableGiftEntryGrid": true,
+      "enableGroupMembershipPref": true,
+      "enableIndustriesAssessment": true,
+      "enableInteractionSummaryPref": true,
+      "enableOutcomes": true,
+      "enableTimelinePref": true,
+      "enableVolunteerManagement": true
+    },
+    "interestTaggingSettings": {
+      "enableInterestTagging": true
+    },
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    },
+    "nameSettings": {
+      "enableMiddleName": true,
+      "enableNameSuffix": true
+    },
+    "omniStudioSettings": {
+      "enableOmniStudioMetadata": true
+    },
+    "experienceBundleSettings": {
+      "enableExperienceBundleMetadata": true
+    },
+    "opportunitySettings": {
+      "enableOpportunityFieldHistoryTracking": true
+    }
+  }
+}

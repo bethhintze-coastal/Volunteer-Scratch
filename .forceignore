@@ -1,0 +1,11 @@
+# LWC local development
+**/jsconfig.json
+**/.eslintrc.json
+
+# Dependencies
+**/node_modules/**
+**/package-lock.json
+
+# Scratch org artifacts
+.sfdx/
+.sf/

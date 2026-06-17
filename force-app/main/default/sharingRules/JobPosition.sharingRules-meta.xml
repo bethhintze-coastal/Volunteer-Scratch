@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingGuestRules>
+        <fullName>Guest_Access_for_Job_Position</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>This enables volunteer signups by providing access publicly based on Status field.</description>
+        <label>Guest Access for Job Position</label>
+        <sharedTo>
+            <guestUser>Volunteer_Sign_Up</guestUser>
+        </sharedTo>
+        <criteriaItems>
+            <field>Status</field>
+            <operation>equals</operation>
+            <value>In Progress</value>
+        </criteriaItems>
+    </sharingGuestRules>
+</SharingRules>

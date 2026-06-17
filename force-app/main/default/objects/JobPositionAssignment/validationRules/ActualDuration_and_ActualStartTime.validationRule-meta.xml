@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ActualDuration_and_ActualStartTime</fullName>
+    <active>true</active>
+    <description>Checks to be sure that Actual Start Time and Actual Duration are filled in when Status is set to Complete.</description>
+    <errorConditionFormula>AND(ISPICKVAL(Status,&apos;Complete&apos;),
+OR(isblank( ActualStartTime ),isblank( ActualDuration ))
+)</errorConditionFormula>
+    <errorDisplayField>Status</errorDisplayField>
+    <errorMessage>The record cannot be marked as completed without Actual Duration and Actual Start Time fields completed.</errorMessage>
+</ValidationRule>

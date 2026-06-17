@@ -1,0 +1,125 @@
+{
+  "appPageId" : "398c9879-cea7-45f1-8229-7129786624c7",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "076cd393-098e-4535-9608-cae8f0fa17e4",
+  "label" : "Home",
+  "regions" : [ {
+    "id" : "453d5ffb-6cc7-4bda-b70f-86c0a1e4cba2",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "richTextValue" : "<div><p><span style='font-size: 48px;'>Thank you for volunteering!</span></p></div>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "d70e76c5-2b8d-4384-a428-b8ba0042fc61",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "flowArguments" : "[{\"label\":\"email\",\"dataType\":\"String\",\"supportsRecordId\":false,\"value\":\"{!email}\"},{\"label\":\"fName\",\"dataType\":\"String\",\"supportsRecordId\":false,\"value\":\"{!fName}\"},{\"label\":\"inputId\",\"dataType\":\"String\",\"supportsRecordId\":false,\"value\":\"{!inputId}\"},{\"label\":\"lName\",\"dataType\":\"String\",\"supportsRecordId\":false,\"value\":\"{!lName}\"},{\"label\":\"volunteerId\",\"dataType\":\"String\",\"supportsRecordId\":false,\"value\":\"{!volunteerId}\"}]",
+        "flowName" : "VMQS_Sign_Up_Guest_User"
+      },
+      "componentName" : "forceCommunity:flowCommunity",
+      "id" : "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "enableInlineEdit" : true,
+        "filterName" : "All_accounts",
+        "layout" : "FULL",
+        "pageSize" : 25,
+        "scope" : "Account",
+        "showActionBar" : true,
+        "showChartsPanel" : true,
+        "showDisplay" : "showall",
+        "showFilterPanel" : true,
+        "showImageIcon" : true,
+        "showManualRefreshButton" : true,
+        "showObjectName" : true,
+        "showPinnedList" : true,
+        "showSearchBar" : true
+      },
+      "componentName" : "forceCommunity:objectHome",
+      "id" : "59308d56-e8fb-4fd8-9ec3-967ed5524877",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "80ac096b-2dc4-4b82-8f6a-c5f4d5b57ed1",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "enableInlineEdit" : true,
+        "filterName" : "All_accounts",
+        "layout" : "FULL",
+        "pageSize" : 25,
+        "scope" : "Account",
+        "showActionBar" : true,
+        "showChartsPanel" : true,
+        "showDisplay" : "showall",
+        "showFilterPanel" : true,
+        "showImageIcon" : true,
+        "showManualRefreshButton" : true,
+        "showObjectName" : true,
+        "showPinnedList" : true,
+        "showSearchBar" : true
+      },
+      "componentName" : "forceCommunity:objectHome",
+      "id" : "526e3f79-4c7e-4d9d-a7fe-a54d33d1a5cc",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "enableInlineEdit" : true,
+        "filterName" : "All_accounts",
+        "layout" : "FULL",
+        "pageSize" : 25,
+        "scope" : "Account",
+        "showActionBar" : true,
+        "showChartsPanel" : true,
+        "showDisplay" : "showall",
+        "showFilterPanel" : true,
+        "showImageIcon" : true,
+        "showManualRefreshButton" : true,
+        "showObjectName" : true,
+        "showPinnedList" : true,
+        "showSearchBar" : true
+      },
+      "componentName" : "forceCommunity:objectHome",
+      "id" : "fe62ef44-046d-4d81-949d-c3a186c8812e",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "97f364b3-ddce-45a6-bbbd-0256e8ed06d8",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Home"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "9719af30-83da-4c16-b8fd-3c9491426d3e",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "d09bf9b8-dba2-48c6-ac5f-73bbe84f9351",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "home"
+}

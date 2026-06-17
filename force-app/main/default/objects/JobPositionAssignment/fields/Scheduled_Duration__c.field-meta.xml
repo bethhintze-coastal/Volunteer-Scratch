@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Scheduled_Duration__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(AND(ISBLANK(ScheduledStartTime),ISBLANK(ScheduledEndTime)), 
+ AssignedPositionShift.Default_Duration__c  ,
+ROUND((ScheduledEndTime-ScheduledStartTime)*24,2))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>This field is calculated by the J.P. Shift&apos;s Start and End Time, or if there is no J.P. Shift then by the Scheduled End Time or Start Time on this record.</inlineHelpText>
+    <label>Scheduled Duration</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

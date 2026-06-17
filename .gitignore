@@ -1,0 +1,22 @@
+# Salesforce local cache and login
+.sfdx/
+.sf/
+.localdevserver/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Local session files
+.claude/
+.vmqs-temp/
+
+# Temp metadata
+temp-meta/

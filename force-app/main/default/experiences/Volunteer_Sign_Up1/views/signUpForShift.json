@@ -1,0 +1,45 @@
+{
+  "appPageId" : "398c9879-cea7-45f1-8229-7129786624c7",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "cff243b7-c85e-4ea4-80ab-970e985116ba",
+  "label" : "Sign Up for a Shift",
+  "regions" : [ {
+    "id" : "453d5ffb-6cc7-4bda-b70f-86c0a1e4cba2",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "flowArguments" : "[]",
+        "flowName" : "VMQS_Authenticated_Sign_Up"
+      },
+      "componentName" : "forceCommunity:flowCommunity",
+      "id" : "461ac130-bf37-4d3b-a85c-81a69a9963e3",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "6aca5f4e-307f-46df-a6d1-71344ec569e1",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "Sign up for an available volunteer shift.",
+        "title" : "Sign Up for a Shift"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "2000a968-f69e-494c-9a30-3f18d8e08cc5",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "d09bf9b8-dba2-48c6-ac5f-73bbe84f9351",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom"
+}

@@ -1,0 +1,45 @@
+{
+  "appPageId" : "398c9879-cea7-45f1-8229-7129786624c7",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "9432c870-3fc7-48a2-97e9-0b8fa6047de3",
+  "label" : "My Shifts",
+  "regions" : [ {
+    "id" : "453d5ffb-6cc7-4bda-b70f-86c0a1e4cba2",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "flowArguments" : "[]",
+        "flowName" : "VMQS_Authenticated_Cancel_Shift"
+      },
+      "componentName" : "forceCommunity:flowCommunity",
+      "id" : "433ff2fa-e215-43b7-bd89-2f691652b2fa",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "98db22d8-bddd-44f4-9d24-47982f403a1e",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "View and cancel your upcoming volunteer shifts.",
+        "title" : "My Shifts"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "1b7090d2-4389-4269-8a1b-31e46de106ab",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "d09bf9b8-dba2-48c6-ac5f-73bbe84f9352",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom"
+}

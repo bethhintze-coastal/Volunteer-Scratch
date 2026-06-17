@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "cff243b7-c85e-4ea4-80ab-970e985116ba",
+  "appPageId" : "398c9879-cea7-45f1-8229-7129786624c7",
+  "configurationTags" : [ ],
+  "devName" : "SignUpForShift",
+  "id" : "2dea74b0-ffc9-44b5-a7e2-29816c5fac3e",
+  "label" : "Sign Up for a Shift",
+  "pageAccess" : "LoginRequired",
+  "routeType" : "custom",
+  "type" : "route",
+  "urlPrefix" : "sign-up-for-shift"
+}
