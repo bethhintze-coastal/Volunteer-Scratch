@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>67.0</apiVersion>
+    <actionCalls>
+        <name>Send_Reminder_Email</name>
+        <label>Send Reminder Email</label>
+        <locationX>176</locationX>
+        <locationY>974</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <connector><targetReference>Log_Reminder_Task</targetReference></connector>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value><elementReference>recContact.Email</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value><stringValue>Reminder: Your Volunteer Shift is Tomorrow</stringValue></value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value><elementReference>frmEmailBody</elementReference></value>
+        </inputParameters>
+    </actionCalls>
     <decisions>
-        <name>Decision_Shifts_Tomorrow</name>
+        <name>Decision_Has_Shifts</name>
         <label>Any Shifts Tomorrow?</label>
         <locationX>176</locationX>
         <locationY>254</locationY>
-        <defaultConnector><targetReference>Screen_End_No_Shifts</targetReference></defaultConnector>
-        <defaultConnectorLabel>No Shifts</defaultConnectorLabel>
+        <defaultConnectorLabel>No Shifts — End</defaultConnectorLabel>
         <rules>
             <name>outcome_HasShifts</name>
             <conditionLogic>and</conditionLogic>
@@ -22,11 +42,11 @@
     </decisions>
     <decisions>
         <name>Decision_Has_Assignments</name>
-        <label>Any Upcoming Assignments?</label>
+        <label>Any Upcoming Assignments for Shift?</label>
         <locationX>176</locationX>
         <locationY>614</locationY>
         <defaultConnector><targetReference>Loop_Shifts</targetReference></defaultConnector>
-        <defaultConnectorLabel>No Assignments</defaultConnectorLabel>
+        <defaultConnectorLabel>No Assignments — Next Shift</defaultConnectorLabel>
         <rules>
             <name>outcome_HasAssignments</name>
             <conditionLogic>and</conditionLogic>
@@ -39,7 +59,7 @@
             <label>Has Assignments</label>
         </rules>
     </decisions>
-    <description>Runs daily at 8 AM. Queries all JobPositionShifts starting tomorrow with Upcoming assignments and sends a reminder email to each assigned volunteer. Logs a Task on the volunteer&apos;s Contact record.</description>
+    <description>Scheduled flow — runs daily at 8 AM. Queries all JobPositionShifts starting tomorrow, loops through Upcoming assignments, and sends a reminder email to each volunteer using Salesforce Core email. Logs a Task on the volunteer Contact record as activity history.</description>
     <formulas>
         <name>frmTomorrow</name>
         <dataType>Date</dataType>
@@ -48,7 +68,12 @@
     <formulas>
         <name>frmEmailBody</name>
         <dataType>String</dataType>
-        <expression>"&lt;p&gt;Hi " &amp; {!Loop_Assignments.AssignedContact.Name} &amp; ",&lt;/p&gt;&lt;p&gt;This is a friendly reminder that you have a volunteer shift coming up tomorrow!&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Event:&lt;/strong&gt; " &amp; {!recInitiative.Name} &amp; "&lt;br/&gt;&lt;strong&gt;Shift:&lt;/strong&gt; " &amp; {!Loop_Shifts.Start_and_End_DateTime__c} &amp; "&lt;/p&gt;&lt;p&gt;We&apos;re looking forward to seeing you. If you need to cancel or reschedule, please log in to the volunteer portal.&lt;/p&gt;&lt;p&gt;Thank you for your time and dedication!&lt;/p&gt;"</expression>
+        <expression>"Hi " &amp; {!recContact.Name} &amp; "," &amp; BR() &amp; BR() &amp;
+"This is a friendly reminder that you have a volunteer shift tomorrow!" &amp; BR() &amp; BR() &amp;
+"Event: " &amp; {!recInitiative.Name} &amp; BR() &amp;
+"Shift: " &amp; {!Loop_Shifts.Start_and_End_DateTime__c} &amp; BR() &amp; BR() &amp;
+"We look forward to seeing you. If you need to cancel or reschedule, please log in to the volunteer portal." &amp; BR() &amp; BR() &amp;
+"Thank you for your time and dedication!"</expression>
     </formulas>
     <interviewLabel>VMQS Send Shift Reminders {!$Flow.CurrentDateTime}</interviewLabel>
     <label>VMQS - Send Shift Reminders</label>
@@ -60,7 +85,6 @@
         <collectionReference>colTomorrowsShifts</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector><targetReference>Get_Assignments_For_Shift</targetReference></nextValueConnector>
-        <noMoreValuesConnector><targetReference>Loop_Assignments</targetReference></noMoreValuesConnector>
     </loops>
     <loops>
         <name>Loop_Assignments</name>
@@ -69,7 +93,7 @@
         <locationY>854</locationY>
         <collectionReference>colShiftAssignments</collectionReference>
         <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector><targetReference>Send_Reminder_Email</targetReference></nextValueConnector>
+        <nextValueConnector><targetReference>Get_Contact</targetReference></nextValueConnector>
         <noMoreValuesConnector><targetReference>Loop_Shifts</targetReference></noMoreValuesConnector>
     </loops>
     <processMetadataValues>
@@ -79,7 +103,7 @@
     <processType>AutoLaunchedFlow</processType>
     <recordCreates>
         <name>Log_Reminder_Task</name>
-        <label>Log Reminder Activity on Contact</label>
+        <label>Log Reminder Task on Contact</label>
         <locationX>176</locationX>
         <locationY>1094</locationY>
         <connector><targetReference>Loop_Assignments</targetReference></connector>
@@ -97,7 +121,7 @@
         </inputAssignments>
         <inputAssignments>
             <field>WhoId</field>
-            <value><elementReference>Loop_Assignments.AssignedContactId</elementReference></value>
+            <value><elementReference>recContact.Id</elementReference></value>
         </inputAssignments>
         <inputAssignments>
             <field>Description</field>
@@ -111,7 +135,7 @@
         <locationX>176</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>Decision_Shifts_Tomorrow</targetReference></connector>
+        <connector><targetReference>Decision_Has_Shifts</targetReference></connector>
         <filterLogic>AND</filterLogic>
         <filters>
             <field>StartDate</field>
@@ -156,8 +180,6 @@
         <outputReference>colShiftAssignments</outputReference>
         <queriedFields>Id</queriedFields>
         <queriedFields>AssignedContactId</queriedFields>
-        <queriedFields>AssignedContact.Name</queriedFields>
-        <queriedFields>AssignedContact.Email</queriedFields>
     </recordLookups>
     <recordLookups>
         <name>Get_JobPosition</name>
@@ -182,7 +204,7 @@
         <name>Get_Initiative</name>
         <label>Get Volunteer Initiative</label>
         <locationX>176</locationX>
-        <locationY>734</locationY>
+        <locationY>854</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector><targetReference>Loop_Assignments</targetReference></connector>
         <filterLogic>AND</filterLogic>
@@ -197,49 +219,26 @@
         <queriedFields>Id</queriedFields>
         <queriedFields>Name</queriedFields>
     </recordLookups>
-    <screens>
-        <name>Screen_End_No_Shifts</name>
-        <label>No Shifts Tomorrow</label>
-        <locationX>396</locationX>
-        <locationY>374</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>txt_NoShifts</name>
-            <fieldText>&lt;p&gt;No shifts found for tomorrow. No reminders sent.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <actionCalls>
-        <name>Send_Reminder_Email</name>
-        <label>Send Reminder Email</label>
+    <recordLookups>
+        <name>Get_Contact</name>
+        <label>Get Volunteer Contact</label>
         <locationX>176</locationX>
         <locationY>974</locationY>
-        <actionName>emailSimple</actionName>
-        <actionType>emailSimple</actionType>
-        <connector><targetReference>Log_Reminder_Task</targetReference></connector>
-        <inputParameters>
-            <name>emailAddresses</name>
-            <value><elementReference>Loop_Assignments.AssignedContact.Email</elementReference></value>
-        </inputParameters>
-        <inputParameters>
-            <name>emailSubject</name>
-            <value><stringValue>Reminder: Your Volunteer Shift is Tomorrow</stringValue></value>
-        </inputParameters>
-        <inputParameters>
-            <name>emailBody</name>
-            <value><elementReference>frmEmailBody</elementReference></value>
-        </inputParameters>
-    </actionCalls>
-    <steps>
-        <name>End_Flow</name>
-        <label>End</label>
-        <locationX>176</locationX>
-        <locationY>1214</locationY>
-    </steps>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Send_Reminder_Email</targetReference></connector>
+        <filterLogic>AND</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>Loop_Assignments.AssignedContactId</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <outputReference>recContact</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>Email</queriedFields>
+    </recordLookups>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
@@ -283,5 +282,13 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>VolunteerInitiative</objectType>
+    </variables>
+    <variables>
+        <name>recContact</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Contact</objectType>
     </variables>
 </Flow>
