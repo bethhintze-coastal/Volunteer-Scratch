@@ -5,7 +5,7 @@
         <name>Decision_Shifts_Available</name>
         <label>Shifts Available?</label>
         <locationX>176</locationX>
-        <locationY>494</locationY>
+        <locationY>254</locationY>
         <defaultConnector><targetReference>Screen_No_Shifts</targetReference></defaultConnector>
         <defaultConnectorLabel>No Shifts</defaultConnectorLabel>
         <rules>
@@ -24,7 +24,7 @@
         <name>Decision_Already_Signed_Up</name>
         <label>Already Signed Up?</label>
         <locationX>176</locationX>
-        <locationY>854</locationY>
+        <locationY>614</locationY>
         <defaultConnector><targetReference>Get_Shift_Capacity</targetReference></defaultConnector>
         <defaultConnectorLabel>Not Signed Up</defaultConnectorLabel>
         <rules>
@@ -43,7 +43,7 @@
         <name>Decision_Capacity_Check</name>
         <label>Capacity Available?</label>
         <locationX>176</locationX>
-        <locationY>1094</locationY>
+        <locationY>854</locationY>
         <defaultConnector><targetReference>Screen_At_Capacity</targetReference></defaultConnector>
         <defaultConnectorLabel>At Capacity</defaultConnectorLabel>
         <rules>
@@ -58,15 +58,7 @@
             <label>Has Capacity</label>
         </rules>
     </decisions>
-    <description>Allows authenticated portal volunteers to browse available shifts and sign up. Uses the logged-in user&apos;s Contact ID to create the JobPositionAssignment. Enforces shift capacity.</description>
-    <dynamicChoiceSets>
-        <name>choiceInitiatives</name>
-        <collectionReference>colInitiatives</collectionReference>
-        <dataType>String</dataType>
-        <displayField>Name</displayField>
-        <object>VolunteerInitiative</object>
-        <valueField>Id</valueField>
-    </dynamicChoiceSets>
+    <description>Allows authenticated portal volunteers to browse all available shifts and sign up. Uses the logged-in user&apos;s Contact ID to create the JobPositionAssignment. Enforces capacity and prevents duplicate signups.</description>
     <dynamicChoiceSets>
         <name>choiceShifts</name>
         <collectionReference>colShifts</collectionReference>
@@ -86,7 +78,7 @@
         <name>Create_Assignment</name>
         <label>Create Assignment</label>
         <locationX>176</locationX>
-        <locationY>1214</locationY>
+        <locationY>974</locationY>
         <connector><targetReference>Screen_Confirmation</targetReference></connector>
         <inputAssignments>
             <field>AssignedContactId</field>
@@ -95,10 +87,6 @@
         <inputAssignments>
             <field>AssignedPositionShiftId</field>
             <value><elementReference>pick_Shift</elementReference></value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>RelatedVolunteerInitiativeId</field>
-            <value><elementReference>pick_Initiative</elementReference></value>
         </inputAssignments>
         <inputAssignments>
             <field>Status</field>
@@ -111,45 +99,13 @@
         <object>JobPositionAssignment</object>
     </recordCreates>
     <recordLookups>
-        <name>Get_Active_Initiatives</name>
-        <label>Get Active Initiatives</label>
+        <name>Get_Available_Shifts</name>
+        <label>Get All Available Shifts</label>
         <locationX>176</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>Screen_Select_Initiative</targetReference></connector>
-        <filterLogic>AND</filterLogic>
-        <filters>
-            <field>IsPublished</field>
-            <operator>EqualTo</operator>
-            <value><booleanValue>true</booleanValue></value>
-        </filters>
-        <filters>
-            <field>Status</field>
-            <operator>EqualTo</operator>
-            <value><stringValue>In Progress</stringValue></value>
-        </filters>
-        <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>VolunteerInitiative</object>
-        <outputReference>colInitiatives</outputReference>
-        <queriedFields>Id</queriedFields>
-        <queriedFields>Name</queriedFields>
-        <queriedFields>StartDate</queriedFields>
-        <queriedFields>EndDate</queriedFields>
-        <queriedFields>Description</queriedFields>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Available_Shifts</name>
-        <label>Get Available Shifts</label>
-        <locationX>176</locationX>
-        <locationY>374</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector><targetReference>Decision_Shifts_Available</targetReference></connector>
         <filterLogic>AND</filterLogic>
-        <filters>
-            <field>JobPositionId</field>
-            <operator>EqualTo</operator>
-            <value><elementReference>pick_Initiative</elementReference></value>
-        </filters>
         <filters>
             <field>Status</field>
             <operator>EqualTo</operator>
@@ -159,18 +115,15 @@
         <object>JobPositionShift</object>
         <outputReference>colShifts</outputReference>
         <queriedFields>Id</queriedFields>
-        <queriedFields>Name</queriedFields>
-        <queriedFields>StartDate</queriedFields>
-        <queriedFields>StartTime</queriedFields>
-        <queriedFields>EndTime</queriedFields>
-        <queriedFields>RemainingCapacity</queriedFields>
         <queriedFields>Start_and_End_DateTime__c</queriedFields>
+        <queriedFields>RemainingCapacity</queriedFields>
+        <queriedFields>MaximumAttendeesCount</queriedFields>
     </recordLookups>
     <recordLookups>
         <name>Get_Existing_Assignment</name>
         <label>Check Existing Assignment</label>
         <locationX>176</locationX>
-        <locationY>734</locationY>
+        <locationY>494</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector><targetReference>Decision_Already_Signed_Up</targetReference></connector>
         <filterLogic>AND</filterLogic>
@@ -198,7 +151,7 @@
         <name>Get_Shift_Capacity</name>
         <label>Get Shift Remaining Capacity</label>
         <locationX>176</locationX>
-        <locationY>974</locationY>
+        <locationY>734</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector><targetReference>Decision_Capacity_Check</targetReference></connector>
         <filterLogic>AND</filterLogic>
@@ -215,41 +168,16 @@
         <queriedFields>MaximumAttendeesCount</queriedFields>
     </recordLookups>
     <screens>
-        <name>Screen_Select_Initiative</name>
-        <label>Select an Event</label>
-        <locationX>176</locationX>
-        <locationY>254</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <connector><targetReference>Get_Available_Shifts</targetReference></connector>
-        <fields>
-            <name>txt_SelectInitiativeHeader</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 18px;&quot;&gt;Available Volunteer Events&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Select an event to view available shifts.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <fields>
-            <name>pick_Initiative</name>
-            <choiceReferences>choiceInitiatives</choiceReferences>
-            <dataType>String</dataType>
-            <fieldText>Event</fieldText>
-            <fieldType>RadioButtons</fieldType>
-            <isRequired>true</isRequired>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
         <name>Screen_No_Shifts</name>
         <label>No Shifts Available</label>
         <locationX>396</locationX>
-        <locationY>614</locationY>
-        <allowBack>true</allowBack>
+        <locationY>374</locationY>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>txt_NoShifts</name>
-            <fieldText>&lt;p&gt;There are no shifts with available capacity for this event. Please check back later or select a different event.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;There are no shifts available right now. Please check back soon.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -259,8 +187,8 @@
         <name>Screen_Select_Shift</name>
         <label>Select a Shift</label>
         <locationX>176</locationX>
-        <locationY>614</locationY>
-        <allowBack>true</allowBack>
+        <locationY>374</locationY>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector><targetReference>Get_Existing_Assignment</targetReference></connector>
@@ -284,13 +212,13 @@
         <name>Screen_Already_Signed_Up</name>
         <label>Already Signed Up</label>
         <locationX>396</locationX>
-        <locationY>974</locationY>
+        <locationY>734</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>txt_AlreadySignedUp</name>
-            <fieldText>&lt;p&gt;You&apos;re already signed up for this shift. To make changes, please visit My Shifts.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;You&apos;re already signed up for this shift. To cancel or make changes, please visit My Shifts.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -300,13 +228,13 @@
         <name>Screen_At_Capacity</name>
         <label>Shift Full</label>
         <locationX>396</locationX>
-        <locationY>1214</locationY>
+        <locationY>974</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>txt_AtCapacity</name>
-            <fieldText>&lt;p&gt;This shift is now full. Please go back and select a different shift.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Sorry, this shift is now full. Please go back and select a different shift.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -316,7 +244,7 @@
         <name>Screen_Confirmation</name>
         <label>You&apos;re Signed Up!</label>
         <locationX>176</locationX>
-        <locationY>1334</locationY>
+        <locationY>1094</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -331,17 +259,9 @@
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
-        <connector><targetReference>Get_Active_Initiatives</targetReference></connector>
+        <connector><targetReference>Get_Available_Shifts</targetReference></connector>
     </start>
     <status>Active</status>
-    <variables>
-        <name>colInitiatives</name>
-        <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <objectType>VolunteerInitiative</objectType>
-    </variables>
     <variables>
         <name>colShifts</name>
         <dataType>SObject</dataType>
