@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <decisions>
+        <name>Decision_Has_Assignments</name>
+        <label>Any Assignments to Update?</label>
+        <locationX>176</locationX>
+        <locationY>254</locationY>
+        <defaultConnectorLabel>No Assignments</defaultConnectorLabel>
+        <rules>
+            <name>outcome_HasAssignments</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>colAssignments</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Loop_Assignments</targetReference></connector>
+            <label>Has Assignments</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Decision_Has_Scheduled_Times</name>
+        <label>Has Scheduled Start and End Times?</label>
+        <locationX>176</locationX>
+        <locationY>494</locationY>
+        <defaultConnector><targetReference>Get_Shift</targetReference></defaultConnector>
+        <defaultConnectorLabel>No — Use Shift Duration</defaultConnectorLabel>
+        <rules>
+            <name>outcome_HasTimes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Loop_Assignments.ScheduledStartTime</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Loop_Assignments.ScheduledEndTime</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Assignment_Duration_From_Times</targetReference></connector>
+            <label>Yes — Calculate from Times</label>
+        </rules>
+    </decisions>
+    <description>Record-triggered flow on VolunteerInitiative. When Status changes to Complete, queries all active JobPositionAssignments for the initiative where ActualDuration is blank, calculates hours from scheduled times or shift default duration, and bulk-updates the records. Only updates blank ActualDuration values to prevent duplicate entries.</description>
+    <formulas>
+        <name>frmDurationFromTimes</name>
+        <dataType>Number</dataType>
+        <scale>2</scale>
+        <expression>({!Loop_Assignments.ScheduledEndTime} - {!Loop_Assignments.ScheduledStartTime}) * 24</expression>
+    </formulas>
+    <interviewLabel>VMQS Auto Update Volunteer Hours {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>VMQS - Auto Update Volunteer Hours</label>
+    <loops>
+        <name>Loop_Assignments</name>
+        <label>Loop Through Assignments</label>
+        <locationX>176</locationX>
+        <locationY>374</locationY>
+        <collectionReference>colAssignments</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector><targetReference>Decision_Has_Scheduled_Times</targetReference></nextValueConnector>
+        <noMoreValuesConnector><targetReference>Update_Assignments</targetReference></noMoreValuesConnector>
+    </loops>
+    <assignments>
+        <name>Assignment_Duration_From_Times</name>
+        <label>Set Duration from Scheduled Times</label>
+        <locationX>176</locationX>
+        <locationY>614</locationY>
+        <assignmentItems>
+            <assignToReference>Loop_Assignments.ActualDuration</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>frmDurationFromTimes</elementReference></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Loop_Assignments.Status</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>Complete</stringValue></value>
+        </assignmentItems>
+        <connector><targetReference>Add_To_Update_Collection</targetReference></connector>
+    </assignments>
+    <assignments>
+        <name>Assignment_Duration_From_Shift</name>
+        <label>Set Duration from Shift Default</label>
+        <locationX>396</locationX>
+        <locationY>734</locationY>
+        <assignmentItems>
+            <assignToReference>Loop_Assignments.ActualDuration</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>recShift.Default_Duration__c</elementReference></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Loop_Assignments.Status</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>Complete</stringValue></value>
+        </assignmentItems>
+        <connector><targetReference>Add_To_Update_Collection</targetReference></connector>
+    </assignments>
+    <assignments>
+        <name>Add_To_Update_Collection</name>
+        <label>Add to Update Collection</label>
+        <locationX>176</locationX>
+        <locationY>854</locationY>
+        <assignmentItems>
+            <assignToReference>colAssignmentsToUpdate</assignToReference>
+            <operator>Add</operator>
+            <value><elementReference>Loop_Assignments</elementReference></value>
+        </assignmentItems>
+        <connector><targetReference>Loop_Assignments</targetReference></connector>
+    </assignments>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value><stringValue>LightningFlowBuilder</stringValue></value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Assignments</name>
+        <label>Get Active Assignments Without Hours</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Decision_Has_Assignments</targetReference></connector>
+        <filterLogic>1 AND 2 AND (3 OR 4)</filterLogic>
+        <filters>
+            <field>RelatedVolunteerInitiativeId</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </filters>
+        <filters>
+            <field>ActualDuration</field>
+            <operator>IsNull</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>Upcoming</stringValue></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>In Progress</stringValue></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>JobPositionAssignment</object>
+        <outputReference>colAssignments</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>AssignedContactId</queriedFields>
+        <queriedFields>AssignedPositionShiftId</queriedFields>
+        <queriedFields>ScheduledStartTime</queriedFields>
+        <queriedFields>ScheduledEndTime</queriedFields>
+        <queriedFields>ActualDuration</queriedFields>
+        <queriedFields>Status</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Shift</name>
+        <label>Get Shift Default Duration</label>
+        <locationX>396</locationX>
+        <locationY>614</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Assignment_Duration_From_Shift</targetReference></connector>
+        <filterLogic>AND</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>Loop_Assignments.AssignedPositionShiftId</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>JobPositionShift</object>
+        <outputReference>recShift</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Default_Duration__c</queriedFields>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Assignments</name>
+        <label>Bulk Update Assignments</label>
+        <locationX>176</locationX>
+        <locationY>974</locationY>
+        <inputReference>colAssignmentsToUpdate</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Get_Assignments</targetReference></connector>
+        <filterLogic>AND</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>Complete</stringValue></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>IsChanged</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </filters>
+        <object>VolunteerInitiative</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>colAssignments</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>JobPositionAssignment</objectType>
+    </variables>
+    <variables>
+        <name>colAssignmentsToUpdate</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>JobPositionAssignment</objectType>
+    </variables>
+    <variables>
+        <name>recShift</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>JobPositionShift</objectType>
+    </variables>
+</Flow>
